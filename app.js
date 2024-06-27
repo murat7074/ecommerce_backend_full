@@ -68,10 +68,12 @@ if (process.env.NODE_ENV === 'DEVELOPMENT') {
 // Connecting to database
 connectDatabase();
 
-// JSON middleware (webhook dışında tüm rotalar için)
 app.use(
   express.json({
     limit: '10mb', // limiti 10 mb yapmazsak cloudinary e 1mb üzerinde resim vs yükleyemiyoruz
+    verify: (req, res, buf) => {
+      req.rawBody = buf.toString();
+    },
   })
 );
 app.use(cookieParser());
@@ -104,8 +106,6 @@ process.on('unhandledRejection', (err) => {
     process.exit(1);
   });
 });
-
-
 
 
 
