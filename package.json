@@ -6,8 +6,8 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "dev": "SET NODE_ENV=DEVELOPMENT& nodemon app.js",
-    "prod": "SET NODE_ENV=PRODUCTION& nodemon app.js",
+    "dev": "cross-env NODE_ENV=DEVELOPMENT nodemon app.js",
+    "prod": "cross-env NODE_ENV=PRODUCTION nodemon app.js",
     "seeder": "node seeder/seeder.js"
   },
   "author": "Murat7074",
@@ -34,6 +34,7 @@
     "xss-clean": "^0.1.4"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "nodemon": "^3.1.0"
   }
 }
