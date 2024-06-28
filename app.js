@@ -1,4 +1,5 @@
 import express from 'express';
+const app = express();
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import { connectDatabase } from './config/dbConnect.js';
@@ -22,11 +23,9 @@ process.on('uncaughtException', (err) => {
   process.exit(1);
 });
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== 'PRODUCTION') {
   dotenv.config({ path: 'config/config.env' });
 }
-
-const app = express();
 
 app.set('trust proxy', 1); // Proxy ayarını güven
 
@@ -45,14 +44,8 @@ app.use(
 // CORS Middleware
 const allowedOrigins = ['http://localhost:5173', 'https://beybuilmek.com']; 
 const options = {
-  origin: function (origin, callback) {
-    if (allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true, // İzin verilen origin'den gelen isteklerde cookie'lerin gönderilmesi için credentials ayarı
+  origin: allowedOrigins,
+  optionsSuccessStatus: 200,
 };
 app.use(cors(options));
 
@@ -70,7 +63,7 @@ app.use(mongoSanitize());
 app.use(xss());
 
 // Morgan for logging
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'DEVELOPMENT') {
   app.use(morgan('dev'));
 }
 
@@ -87,21 +80,6 @@ app.use(
 );
 app.use(cookieParser());
 
-// CORS ve HttpOnly, Secure Cookie Ayarları
-if (process.env.NODE_ENV === 'production') {
-  app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', 'https://beybuilmek.com');
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-
-    // HttpOnly ve Secure olarak cookie'leri ayarla
-    res.cookie('key', 'value', { httpOnly: true, secure: false }); // Yerel geliştirme ortamında secure: false olmalıdır
-
-    next();
-  });
-}
-
 // Import all routes
 import productRoutes from './routes/products.js';
 import authRoutes from './routes/auth.js';
@@ -116,11 +94,12 @@ app.use('/api/v1', paymentRoutes);
 // Error Middleware
 app.use(errorMiddleware);
 
-const PORT = process.env.PORT || 5000;
-
-const server = app.listen(PORT, () => {
-  console.log(`Server started on PORT: ${PORT} in ${process.env.NODE_ENV} Mode..`);
+const server = app.listen(process.env.PORT || 5000, () => {
+  console.log(
+    `Server started on PORT: ${process.env.PORT || 5000} in ${process.env.NODE_ENV} Mode.`
+  );
 });
+
 
 // Handle unHandled Promise rejection
 process.on('unhandledRejection', (err) => {
@@ -130,6 +109,9 @@ process.on('unhandledRejection', (err) => {
     process.exit(1);
   });
 });
+
+
+
 
 
 
