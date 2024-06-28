@@ -40,7 +40,7 @@ app.use(
 );
 
 // CORS Middleware
-const allowedOrigins = ['http://localhost:5173', 'https://beybuilmek.com'];
+const allowedOrigins = ['http://localhost:5173', 'https://beybuilmek.com']; 
 const options = {
   origin: allowedOrigins,
   optionsSuccessStatus: 200,
@@ -92,13 +92,14 @@ app.use('/api/v1', paymentRoutes);
 // Error Middleware
 app.use(errorMiddleware);
 
-const server = app.listen(process.env.PORT, () => {
+const server = app.listen(process.env.PORT || 5000, () => {
   console.log(
-    `Server started on PORT: ${process.env.PORT} in ${process.env.NODE_ENV} mode.`
+    `Server started on PORT: ${process.env.PORT || 5000} in ${process.env.NODE_ENV} Mode..`
   );
 });
 
-// Handle unHandled Promise rejections
+
+// Handle unHandled Promise rejection
 process.on('unhandledRejection', (err) => {
   console.error(`ERROR: ${err}`);
   console.log('Shutting down server due to Unhandled Promise Rejection');
