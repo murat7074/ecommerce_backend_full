@@ -27,6 +27,8 @@ if (process.env.NODE_ENV !== 'PRODUCTION') {
   dotenv.config({ path: 'config/config.env' });
 }
 
+app.set('trust proxy', 1); // 1 veya true olarak ayarlanabilir
+
 // Helmet Middleware for securing HTTP headers with Content Security Policy
 app.use(
   helmet({
