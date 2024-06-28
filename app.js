@@ -1,6 +1,4 @@
-
 import express from 'express';
-const app = express();
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import { connectDatabase } from './config/dbConnect.js';
@@ -24,11 +22,13 @@ process.on('uncaughtException', (err) => {
   process.exit(1);
 });
 
-if (process.env.NODE_ENV !== 'PRODUCTION') {
+if (process.env.NODE_ENV !== 'production') {
   dotenv.config({ path: 'config/config.env' });
 }
 
-app.set('trust proxy', 1); // 1 veya true olarak ayarlanabilir
+const app = express();
+
+app.set('trust proxy', 1); // Proxy ayarını güven
 
 // Helmet Middleware for securing HTTP headers with Content Security Policy
 app.use(
@@ -45,8 +45,14 @@ app.use(
 // CORS Middleware
 const allowedOrigins = ['http://localhost:5173', 'https://beybuilmek.com']; 
 const options = {
-  origin: allowedOrigins,
-  optionsSuccessStatus: 200,
+  origin: function (origin, callback) {
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true, // İzin verilen origin'den gelen isteklerde cookie'lerin gönderilmesi için credentials ayarı
 };
 app.use(cors(options));
 
@@ -64,7 +70,7 @@ app.use(mongoSanitize());
 app.use(xss());
 
 // Morgan for logging
-if (process.env.NODE_ENV === 'DEVELOPMENT') {
+if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
@@ -82,7 +88,7 @@ app.use(
 app.use(cookieParser());
 
 // CORS ve HttpOnly, Secure Cookie Ayarları
-if (process.env.NODE_ENV === 'PRODUCTION') {
+if (process.env.NODE_ENV === 'production') {
   app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', 'https://beybuilmek.com');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -90,7 +96,7 @@ if (process.env.NODE_ENV === 'PRODUCTION') {
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
 
     // HttpOnly ve Secure olarak cookie'leri ayarla
-    res.cookie('key', 'value', { httpOnly: true, secure: true });
+    res.cookie('key', 'value', { httpOnly: true, secure: false }); // Yerel geliştirme ortamında secure: false olmalıdır
 
     next();
   });
@@ -110,10 +116,10 @@ app.use('/api/v1', paymentRoutes);
 // Error Middleware
 app.use(errorMiddleware);
 
-const server = app.listen(process.env.PORT || 5000, () => {
-  console.log(
-    `Server started on PORT: ${process.env.PORT || 5000} in ${process.env.NODE_ENV} Mode..`
-  );
+const PORT = process.env.PORT || 5000;
+
+const server = app.listen(PORT, () => {
+  console.log(`Server started on PORT: ${PORT} in ${process.env.NODE_ENV} Mode..`);
 });
 
 // Handle unHandled Promise rejection
