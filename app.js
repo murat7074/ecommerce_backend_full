@@ -80,6 +80,26 @@ app.use(
 );
 app.use(cookieParser());
 
+// CORS ve HttpOnly, Secure Cookie Ayarları
+if (process.env.NODE_ENV === 'production') {
+  app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', 'https://beybuilmek.com');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+
+    // HttpOnly ve Secure olarak cookie'leri ayarla
+    res.cookie('key', 'value', {
+      httpOnly: true,
+      secure: true, // Üretim ortamında secure: true olmalıdır
+      sameSite: 'None' // Cookie'nin üçüncü parti isteklerde de gönderilmesi için
+    });
+
+    next();
+  });
+}
+
+
 // Import all routes
 import productRoutes from './routes/products.js';
 import authRoutes from './routes/auth.js';
