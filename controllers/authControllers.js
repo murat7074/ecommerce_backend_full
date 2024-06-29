@@ -112,18 +112,34 @@ export const loginUser = catchAsyncErrors(async (req, res, next) => {
   sendToken(user, 200, res)
 })
 
-// Logout user   =>  /api/v1/logout
+// // Logout user   =>  /api/v1/logout
+// export const logout = catchAsyncErrors(async (req, res, next) => {
+//   res.cookie('token', null, {
+//     // user ın browser da cookies de "token" silinecek
+//     expires: new Date(Date.now()),
+//     httpOnly: true,
+//   })
+
+//   res.status(200).json({
+//     message: 'Logged Out',
+//   })
+// })
+
+
+// Logout user => /api/v1/logout
 export const logout = catchAsyncErrors(async (req, res, next) => {
-  res.cookie('token', null, {
-    // user ın browser da cookies de "token" silinecek
+  res.cookie('token', '', {
     expires: new Date(Date.now()),
     httpOnly: true,
+    secure: process.env.NODE_ENV === 'PRODUCTION', // production'da secure flag'ini ekleyin
+    sameSite: 'None',
   })
 
   res.status(200).json({
-    message: 'Logged Out',
+    message: 'Çıkış Yapıldı.',
   })
 })
+
 
 // Upload user avatar   =>  /api/v1/me/upload_avatar
 export const uploadAvatar = catchAsyncErrors(async (req, res, next) => {
