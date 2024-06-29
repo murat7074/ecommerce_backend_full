@@ -42,10 +42,11 @@ app.use(
 );
 
 // CORS Middleware
-const allowedOrigins = ['http://localhost:5173', 'https://beybuilmek.com']; 
+const allowedOrigins = ['http://localhost:5173', 'https://beybuilmek.com'];
 const options = {
   origin: allowedOrigins,
   optionsSuccessStatus: 200,
+  credentials: true, // Allow cookies to be sent
 };
 app.use(cors(options));
 
@@ -81,24 +82,24 @@ app.use(
 app.use(cookieParser());
 
 // CORS ve HttpOnly, Secure Cookie Ayarları
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'PRODUCTION') {
   app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', 'https://beybuilmek.com');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-
-    // HttpOnly ve Secure olarak cookie'leri ayarla
-    res.cookie('key', 'value', {
-      httpOnly: true,
-      secure: true, // Üretim ortamında secure: true olmalıdır
-      sameSite: 'None' // Cookie'nin üçüncü parti isteklerde de gönderilmesi için
-    });
-
+    next();
+  });
+} else {
+  // For development
+  app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     next();
   });
 }
-
 
 // Import all routes
 import productRoutes from './routes/products.js';
@@ -120,7 +121,6 @@ const server = app.listen(process.env.PORT || 5000, () => {
   );
 });
 
-
 // Handle unHandled Promise rejection
 process.on('unhandledRejection', (err) => {
   console.error(`ERROR: ${err}`);
@@ -129,9 +129,6 @@ process.on('unhandledRejection', (err) => {
     process.exit(1);
   });
 });
-
-
-
 
 
 
