@@ -13,7 +13,7 @@ import xss from 'xss-clean';
 import morgan from 'morgan';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import sendToken from './sendToken.js'; // sendToken fonksiyonunu import edin
+
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
