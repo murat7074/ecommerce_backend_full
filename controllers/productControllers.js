@@ -90,7 +90,7 @@ export const getProductDetails = controllerFunction(async (req, res, next) => {
   )
 
   if (!product) {
-    return next(new ErrorHandler('product not found', 404))
+    return next(new ErrorHandler('Ürün Bulunamdı.', 404))
   }
 
   res.status(200).json({
@@ -104,7 +104,7 @@ export const updateProduct = controllerFunction(async (req, res) => {
   let product = await Product.findById(req?.params?.id)
 
   if (!product) {
-    return next(new ErrorHandler('product not found', 404))
+    return next(new ErrorHandler('Ürün Bulunamdı.', 404))
   }
 
 
@@ -138,7 +138,7 @@ export const uploadProductImages = catchAsyncErrors(async (req, res) => {
   let product = await Product.findById(req?.params?.id)
 
   if (!product) {
-    return next(new ErrorHandler('Product not found', 404))
+    return next(new ErrorHandler('Ürün Bulunamdı.', 404))
   }
 
   const uploader = async (image) =>
@@ -159,7 +159,7 @@ export const deleteProductImage = catchAsyncErrors(async (req, res) => {
   let product = await Product.findById(req?.params?.id)
 
   if (!product) {
-    return next(new ErrorHandler('Product not found', 404))
+    return next(new ErrorHandler('Ürün Bulunamdı.', 404))
   }
 
   // cloudinary den silelim
@@ -185,7 +185,7 @@ export const deleteProduct = catchAsyncErrors(async (req, res) => {
   const product = await Product.findById(req?.params?.id)
 
   if (!product) {
-    return next(new ErrorHandler('Product not found', 404))
+    return next(new ErrorHandler('Ürün Bulunamdı.', 404))
   }
 
   // Deleting image associated with product from cloudinary
@@ -196,7 +196,7 @@ export const deleteProduct = catchAsyncErrors(async (req, res) => {
   await product.deleteOne()
 
   res.status(200).json({
-    message: 'Product Deleted',
+    message: 'Ürün Silindi.',
   })
 })
 
@@ -215,7 +215,7 @@ export const createProductReview = catchAsyncErrors(async (req, res, next) => {
   const product = await Product.findById(productId)
 
   if (!product) {
-    return next(new ErrorHandler('Product not found', 404))
+    return next(new ErrorHandler('Ürün Bulunamdı.', 404))
   }
 
   // userı yorumu varmı
@@ -257,7 +257,7 @@ export const getProductReviews = catchAsyncErrors(async (req, res, next) => {
   const product = await Product.findById(req.query.id).populate('reviews.user')
 
   if (!product) {
-    return next(new ErrorHandler('Product not found', 404))
+    return next(new ErrorHandler('Ürün Bulunamdı.', 404))
   }
 
   res.status(200).json({
@@ -271,7 +271,7 @@ export const deleteReview = catchAsyncErrors(async (req, res, next) => {
   let product = await Product.findById(req.query.productId)
 
   if (!product) {
-    return next(new ErrorHandler('Product not found', 404))
+    return next(new ErrorHandler('Ürün Bulunamdı.', 404))
   }
 
   // yorumu silicez
@@ -309,7 +309,7 @@ export const updateFeatured = catchAsyncErrors(async (req, res, next) => {
   let product = await Product.findById(req.query.productId)
 
   if (!product) {
-    return next(new ErrorHandler('Product not found', 404))
+    return next(new ErrorHandler('Ürün Bulunamdı.', 404))
   }
 
   const review = product.reviews.find(
@@ -317,7 +317,7 @@ export const updateFeatured = catchAsyncErrors(async (req, res, next) => {
   )
 
   if (!review) {
-    return next(new ErrorHandler('Review not found', 404))
+    return next(new ErrorHandler('Yorum Bulunamdı.', 404))
   }
 
   review.featured = featured
@@ -335,7 +335,7 @@ export const updateFeatured = catchAsyncErrors(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
-    message: 'Review featured status updated successfully',
+    message: 'Yorum durumu güncellendi.',
     product,
   })
 })

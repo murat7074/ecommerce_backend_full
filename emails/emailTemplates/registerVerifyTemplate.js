@@ -79,7 +79,7 @@ export const registerVerifyTemplate = ({ verifyUrl, userName }) => `
         </div>
         <div class="content">
             <h2>Merhaba, <span>${userName}</span></h2>
-            <p>Hesabınızı onaylamak için Beybuilmek'a istekde bulundunuz. Hesabınızı onaylamak için butona tıklayın.</p>
+            <p>Hesabınızı onaylamak için Beybuilmek'e istekde bulundunuz. Hesabınızı onaylamak için butona tıklayın.</p>
             <p><strong>Lütfen 30 dakika içinde linke tıklayarak hesabınızı onaylayın.</strong></p>
             <p>
                 <a href="${verifyUrl}" class="button" target="_blank">Hesabını Onayla</a>

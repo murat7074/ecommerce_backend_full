@@ -230,7 +230,7 @@ export const getOrderDetails = catchAsyncErrors(async (req, res, next) => {
 
 
   if (!order) {
-    return next(new ErrorHandler('No Order found with this ID', 404))
+    return next(new ErrorHandler('Sipariş Bulunamdı.', 404))
   }
 
   res.status(200).json({
@@ -252,14 +252,14 @@ export const updateOrder = catchAsyncErrors(async (req, res, next) => {
   const order = await Order.findById(req.params.id)
 
   if (!order) {
-    return next(new ErrorHandler('No Order found with this ID', 404))
+    return next(new ErrorHandler('Sipariş Bulunamdı.', 404))
   }
 
  
   let productNotFound = false
 
   if (productNotFound) {
-    return next(new ErrorHandler('No Product found with one or more IDs.', 404))
+    return next(new ErrorHandler('Ürün Bulunamdı.', 404))
   }
 
   order.orderStatus = req.body.status
@@ -532,19 +532,19 @@ export const returnRequestOrder = catchAsyncErrors(async (req, res, next) => {
 
   // Check if required fields are present
   if (!id || !message || !title) {
-    return next(new ErrorHandler('ID, message, and title are required', 400))
+    return next(new ErrorHandler('İd, mesaj, ve başlık girilmeli.', 400))
   }
 
   const user = await User.findById(req?.user?._id)
 
   if (!user) {
-    return next(new ErrorHandler('User not found', 404))
+    return next(new ErrorHandler('Kullanıcı Bulunamadı.', 404))
   }
 
   const order = await Order.findById(id)
 
   if (!order) {
-    return next(new ErrorHandler('No Order found with this ID', 404))
+    return next(new ErrorHandler('Sipariş Bulunamdı.', 404))
   }
 
   order.returnRequest = true
@@ -588,7 +588,7 @@ export const returnRequestOrder = catchAsyncErrors(async (req, res, next) => {
     title
   )
 
-  // const userInfo = await User.findOne({ _id: user })
+
 
   await brevoEmailSender({
     email: user?.email,

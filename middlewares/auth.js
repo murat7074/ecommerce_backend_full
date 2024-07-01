@@ -1,25 +1,25 @@
-import catchAsyncErrors from "./catchAsyncErrors.js";
-import ErrorHandler from "../utils/errorHandler.js";
-import User from "../models/user.js";
-import jwt from "jsonwebtoken";
+import catchAsyncErrors from './catchAsyncErrors.js'
+import ErrorHandler from '../utils/errorHandler.js'
+import User from '../models/user.js'
+import jwt from 'jsonwebtoken'
 
 // Checks if user is authenticated or not
 export const isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
-  const { token } = req.cookies; 
+  const { token } = req.cookies
 
-  console.log("tokenAuth",token);
+  // console.log("tokenAuth",token);
 
   if (!token) {
-    return next(new ErrorHandler("Login first to access this resource", 401));
+    return next(new ErrorHandler('Login first to access this resource', 401))
   }
 
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);  
+  const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
-  console.log("DECODEDUSER",decoded);
-  req.user = await User.findById(decoded.id);  
+  // console.log("DECODEDUSER",decoded);
+  req.user = await User.findById(decoded.id)
 
-  next();
-});
+  next()
+})
 
 // Authorize user roles
 export const authorizeRoles = (...roles) => {
@@ -30,9 +30,9 @@ export const authorizeRoles = (...roles) => {
           `Role (${req.user.role}) is not allowed to access this resource`,
           403
         )
-      );
+      )
     }
 
-    next();
-  };
-};
+    next()
+  }
+}

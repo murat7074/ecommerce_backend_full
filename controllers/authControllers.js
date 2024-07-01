@@ -11,8 +11,6 @@ import { registerVerifyTemplate } from '../emails/emailTemplates/registerVerifyT
 import { forgotPasswordTemplate } from '../emails/emailTemplates/forgotPasswordTemplate.js'
 import { orderReturnReMessageTemplate } from '../emails/emailTemplates/orderReturnReMessageTemplate.js'
 
-
-
 // Register user   =>  /api/v1/register
 export const registerUser = catchAsyncErrors(async (req, res, next) => {
   const { name, email, password } = req.body
@@ -112,20 +110,6 @@ export const loginUser = catchAsyncErrors(async (req, res, next) => {
   sendToken(user, 200, res)
 })
 
-// // Logout user   =>  /api/v1/logout
-// export const logout = catchAsyncErrors(async (req, res, next) => {
-//   res.cookie('token', null, {
-//     // user ın browser da cookies de "token" silinecek
-//     expires: new Date(Date.now()),
-//     httpOnly: true,
-//   })
-
-//   res.status(200).json({
-//     message: 'Logged Out',
-//   })
-// })
-
-
 // Logout user => /api/v1/logout
 export const logout = catchAsyncErrors(async (req, res, next) => {
   res.cookie('token', '', {
@@ -139,7 +123,6 @@ export const logout = catchAsyncErrors(async (req, res, next) => {
     message: 'Çıkış Yapıldı.',
   })
 })
-
 
 // Upload user avatar   =>  /api/v1/me/upload_avatar
 export const uploadAvatar = catchAsyncErrors(async (req, res, next) => {
@@ -162,7 +145,6 @@ export const uploadAvatar = catchAsyncErrors(async (req, res, next) => {
     user,
   })
 })
-
 
 export const forgotPassword = catchAsyncErrors(async (req, res, next) => {
   // Find user in the database
@@ -231,10 +213,7 @@ export const resetPassword = catchAsyncErrors(async (req, res, next) => {
 
   if (!user) {
     return next(
-      new ErrorHandler(
-        'Parola yenileme linki geçersiz veya süresi doldu.',
-        400
-      )
+      new ErrorHandler('Parola yenileme linki geçersiz veya süresi doldu.', 400)
     )
   }
 
@@ -401,16 +380,13 @@ export const reMessageAdmin = catchAsyncErrors(async (req, res, next) => {
 
   // send email to customer
 
-  const messageForCustomer =
-    orderReturnReMessageTemplate(
-      userShippingInfo,
-      orderInfo,
-      orderProducts,
-      message,
-      title
-    )
-
- 
+  const messageForCustomer = orderReturnReMessageTemplate(
+    userShippingInfo,
+    orderInfo,
+    orderProducts,
+    message,
+    title
+  )
 
   await brevoEmailSender({
     email: user?.email,
@@ -492,7 +468,6 @@ export const addDeliveryAddressUser = catchAsyncErrors(
       existingAddress.zipCode = userAddress.zipCode
       existingAddress.phoneNo = userAddress.phoneNo
       existingAddress.country = userAddress.country
-     
 
       await user.save()
 

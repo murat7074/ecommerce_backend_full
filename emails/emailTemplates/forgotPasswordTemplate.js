@@ -79,7 +79,7 @@ export const forgotPasswordTemplate = ({verifyUrl, userName}) => `
         </div>
         <div class="content">
             <h2>Merhaba, <span>${userName}</span></h2>
-            <p>Parolanızı yeniden oluşturmak için Beybuilmek a istekde bulundunuz. Parolanızı oluşturmak için butona tıklayın.</p>
+            <p>Parolanızı yeniden oluşturmak için Beybuilmek'e istekde bulundunuz. Parolanızı oluşturmak için butona tıklayın.</p>
             <p><strong>Lütfen 30 dakika içinde linke tıklayarak parolanızı değşitirin.</strong></p>
             <p>
                 <a href="${verifyUrl}" class="button" target="_blank">Yeni Parola Oluştur</a>
