@@ -42,14 +42,33 @@ app.use(
   })
 );
 
+// // CORS Middleware
+// const allowedOrigins = ['http://localhost:5173', 'https://beybuilmek.com'];
+// const options = {
+//   origin: allowedOrigins,
+//   optionsSuccessStatus: 200,
+//   credentials: true, // Allow cookies to be sent
+// };
+// app.use(cors(options));
+
 // CORS Middleware
 const allowedOrigins = ['http://localhost:5173', 'https://beybuilmek.com'];
 const options = {
-  origin: allowedOrigins,
+  origin: (origin, callback) => {
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   optionsSuccessStatus: 200,
   credentials: true, // Allow cookies to be sent
 };
 app.use(cors(options));
+
+
+
+
 
 // Rate Limiting Middleware
 const limiter = rateLimit({
@@ -82,25 +101,34 @@ app.use(
 );
 app.use(cookieParser());
 
-// CORS ve HttpOnly, Secure Cookie Ayarları
-if (process.env.NODE_ENV === 'PRODUCTION') {
-  app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', 'https://beybuilmek.com');
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    next();
-  });
-} else {
-  // For development
-  app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    next();
-  });
-}
+// Cookie Ayarları
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  next();
+});
+
+// // CORS ve HttpOnly, Secure Cookie Ayarları
+// if (process.env.NODE_ENV === 'PRODUCTION') {
+//   app.use((req, res, next) => {
+//     res.setHeader('Access-Control-Allow-Origin', 'https://beybuilmek.com');
+//     res.setHeader('Access-Control-Allow-Credentials', 'true');
+//     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+//     next();
+//   });
+// } else {
+//   // For development
+//   app.use((req, res, next) => {
+//     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
+//     res.setHeader('Access-Control-Allow-Credentials', 'true');
+//     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+//     next();
+//   });
+// }
 
 // Import all routes
 import productRoutes from './routes/products.js';
