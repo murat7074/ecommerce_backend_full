@@ -43,7 +43,7 @@ app.use(
 );
 
 // CORS Middleware
-const allowedOrigins = ['http://localhost:5173', 'https://beybuilmek.com'];
+const allowedOrigins = ['http://localhost:5173', 'https://beybuilmek.com','https://www.beybuilmek.com'];
 const options = {
   origin: (origin, callback) => {
     if (allowedOrigins.includes(origin) || !origin) {
